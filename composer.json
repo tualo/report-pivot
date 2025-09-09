@@ -1,0 +1,23 @@
+{
+  "name": "tualo/report-pivot",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Thomas Hoffmann",
+      "email": "thomas.hoffmann@tualo.de"
+    }
+  ],
+  "require": {
+    "ramsey/uuid": "*"
+  },
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Tualo\\Office\\ReportPivot\\": "src/"
+    },
+    "files": [
+      "src/functions.php"
+    ]
+  }
+}
