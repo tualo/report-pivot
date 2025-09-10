@@ -22,5 +22,56 @@ class Tree implements IRoute
                 TualoApplication::result('msg', $e->getMessage());
             }
         }, ['get'], true);
+
+        Route::add('/report-pivot/available', function ($matches) {
+            TualoApplication::contenttype('application/json');
+            $db = TualoApplication::get('session')->getDB();
+            try {
+                $data = json_decode(file_get_contents(__DIR__ . '/json/columns.json'));
+                TualoApplication::result('data', $data);
+                TualoApplication::result('success', true);
+            } catch (\Exception $e) {
+                TualoApplication::result('msg', $e->getMessage());
+            }
+        }, ['get'], true);
+
+
+
+        Route::add('/report-pivot/columns', function ($matches) {
+            TualoApplication::contenttype('application/json');
+            $db = TualoApplication::get('session')->getDB();
+            try {
+                $data = []; // json_decode(file_get_contents(__DIR__ . '/json/columns.json'));
+                TualoApplication::result('data', $data);
+                TualoApplication::result('success', true);
+            } catch (\Exception $e) {
+                TualoApplication::result('msg', $e->getMessage());
+            }
+        }, ['get'], true);
+
+        Route::add('/report-pivot/rows', function ($matches) {
+            TualoApplication::contenttype('application/json');
+            $db = TualoApplication::get('session')->getDB();
+            try {
+                $data = []; // json_decode(file_get_contents(__DIR__ . '/json/columns.json'));
+                TualoApplication::result('data', $data);
+                TualoApplication::result('success', true);
+            } catch (\Exception $e) {
+                TualoApplication::result('msg', $e->getMessage());
+            }
+        }, ['get'], true);
+
+
+        Route::add('/report-pivot/values', function ($matches) {
+            TualoApplication::contenttype('application/json');
+            $db = TualoApplication::get('session')->getDB();
+            try {
+                $data = []; // json_decode(file_get_contents(__DIR__ . '/json/columns.json'));
+                TualoApplication::result('data', $data);
+                TualoApplication::result('success', true);
+            } catch (\Exception $e) {
+                TualoApplication::result('msg', $e->getMessage());
+            }
+        }, ['get'], true);
     }
 }

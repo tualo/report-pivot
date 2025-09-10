@@ -3,6 +3,7 @@ Ext.define('Tualo.reportPivot.lazy.views.PivotPanel', {
     requires: [
         'Tualo.reportPivot.lazy.controller.PivotPanel',
         'Tualo.reportPivot.lazy.models.PivotPanel',
+        'Tualo.reportPivot.lazy.views.RemotePivotGrid'
     ],
     layout: {
         type: 'vbox',
@@ -18,6 +19,11 @@ Ext.define('Tualo.reportPivot.lazy.views.PivotPanel', {
 
     config: {
         documentId: null
+    },
+    onBoxReady: function () {
+
+        console.log('onBoxReady', 'tualo-reportpivot-panel');
+        this.getController().onBoxReady();
     },
     applyDocumentId: function (id) {
         console.log('PivotPanel: Document ID applied to:', id);
@@ -44,6 +50,20 @@ Ext.define('Tualo.reportPivot.lazy.views.PivotPanel', {
                         + '<span>Einen Moment bitte ...</span></div>'
                 }
             ]
+        },
+        {
+            hidden: true,
+            xtype: 'tualo-reportpivot-remotepivotgrid',
+            itemId: 'pivotgrid',
+            bind: {
+                store: '{aggregate}',
+                // available: '{available}'
+            },
+            listeners: {
+                changed: 'onPivotChanged'
+            }
+
+
         }
     ]
 });

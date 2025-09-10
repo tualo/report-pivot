@@ -25,18 +25,3 @@ Ext.define('Tualo.routes.reportPivot.Viewer', {
 
     }
 });
-
-Ext.define('Tualo.routes.FibuConv', {
-    url: 'binary-docx',
-    handler: {
-        action: function (token) {
-            console.log('onAnyRoute', token);
-            alert('fibuconv', 'ok');
-        },
-        before: function (action) {
-            console.log('onBeforeToken', action);
-            console.log(new Date());
-            action.resume();
-        }
-    }
-});
