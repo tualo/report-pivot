@@ -20,16 +20,24 @@ class Aggregate implements IRoute
 
                 if (is_null($payload_data)) throw new \Exception('no payload');
                 unset($payload_data['pivot']['available']);
-                $db->direct('call p_pivot_aggregate({documentId},\'[{"table_name": "view_pivot_blg_hdr_plenty"}]\',{preFilters},{pivot})', [
+
+
+                $tables = [[
+                    'table_name' => $payload_data['pivot']['top'][0]['table']
+                ]];
+                $db->direct('call p_pivot_aggregate({documentId},{tables},{preFilters},{pivot})', [
                     $payload_data['documentId'],
+                    'tables' => json_encode($tables),
                     'preFilters' => json_encode($payload_data['preFilters']),
-                    'pivot' => json_encode($payload_data['pivot'])
+                    'pivot' => str_replace('{tabellenzusatz}', 'plenty', json_encode($payload_data['pivot']))
                 ]);
                 $res = $db->moreResults();
                 App::result('data', $db->direct('select * from temp_pivot_aggregate'));
+                App::result('map', $db->direct('select * from temp_pivot_aggregate_top_map'));
                 App::result('success', true);
                 App::result('res', $res);
             } catch (\Exception $e) {
+                App::result('sql', $db->getLastSQL());
                 App::result('msg', $e->getMessage());
             }
         }, ['post', 'put'], true);

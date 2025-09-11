@@ -5,7 +5,8 @@ Ext.define('Tualo.reportPivot.lazy.models.PivotPanel', {
         'Tualo.reportPivot.lazy.controlls.PivotGridAxisModel',
     ],
     data: {
-        documentId: null
+        documentId: null,
+        tablename: null
     },
     formulas: {
 
@@ -36,9 +37,8 @@ Ext.define('Tualo.reportPivot.lazy.models.PivotPanel', {
         },
         available: {
             pageSize: 25000,
-            fields: ['column_name', 'text', 'type'],
             model: 'Tualo.reportPivot.lazy.controlls.PivotGridAxisModel',
-            autoLoad: true,
+            autoLoad: false,
             proxy: {
                 type: 'ajax',
                 actionMethods: {
@@ -48,7 +48,12 @@ Ext.define('Tualo.reportPivot.lazy.models.PivotPanel', {
                     destroy: 'DELETE'
                 },
                 timeout: 600000,
-                url: './report-pivot/available',
+
+                /*
+                bind: {
+                    url: './report-pivot/available/{tablename}',
+                },
+                */
                 reader: {
                     type: 'json',
                     rootProperty: 'data',

@@ -18,6 +18,7 @@ Ext.define('Tualo.reportPivot.lazy.views.PivotPanel', {
 
 
     config: {
+        tablename: null,
         documentId: null
     },
     onBoxReady: function () {
@@ -31,6 +32,20 @@ Ext.define('Tualo.reportPivot.lazy.views.PivotPanel', {
         // this.getController().onDocumentIdChange(id);
         // this.loadDocument(id);
     },
+
+    applyTablename: function (table) {
+        console.log('PivotPanel: Table Name applied to:', table);
+        this.getViewModel().set('tablename', table);
+
+        this.getViewModel().set('tablename', table);
+
+        let availableStore = this.getViewModel().getStore('available');
+        availableStore.getProxy().setUrl('./report-pivot/available/' + table);
+        availableStore.load();
+        // this.getController().onDocumentIdChange(id);
+        // this.loadDocument(id);
+    },
+
     layout: 'fit',
     items: [
         {

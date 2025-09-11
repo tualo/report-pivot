@@ -45,7 +45,17 @@ Ext.define('Tualo.reportPivot.lazy.views.RemotePivotGrid', {
 			layout: 'card',
 			title: 'Pivot',
 			xtype: 'gridpanel',
+			itemId: 'pivotgrid',
 			columns: [],
+			features: [
+				{
+					id: 'tualofixedsummary',
+					ftype: 'tualofixedsummary',
+					dock: 'bottom',
+					rendererFieldName: 'summaryRenderer',
+					summaryTypeFieldName: 'summaryType'
+				}
+			],
 			bind: {
 				store: '{aggregate}'
 			}

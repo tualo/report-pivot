@@ -8,17 +8,38 @@ Ext.define('Tualo.reportPivot.lazy.controlls.PivotGridAxisModel', {
 
     idProperty: 'dataIndex',
     fields: [
-        { name: 'dataIndex', type: 'string' },
-        { name: 'text', type: 'string' },
-        { name: 'table', type: 'string' },
-        { name: 'column', type: 'string' },
-        { name: 'func', type: 'string' },
+        {
+            name: 'dataIndex', type: 'string', calculate: function (data) {
+                return data.column_name;
+            }
+        },
+        {
+            name: 'column', type: 'string', calculate: function (data) {
+                return data.column_name;
+            }
+        },
 
+        {
+            name: 'text', type: 'string', calculate: function (data) {
+                return data.label;
+            }
+        },
 
+        {
+            name: 'table', type: 'string', calculate: function (data) {
+                return data.table_name;
+            }
+        },
+
+        { name: 'type', type: 'string' },
+        { name: 'label', type: 'string' },
+        { name: 'table_name', type: 'string' },
+        { name: 'column_name', type: 'string' },
+        { name: 'renderer', type: 'string' },
+
+        { name: 'func', type: 'string', defaultValue: null },
         { name: 'align', type: 'string', defaultValue: 'left' },
-        // { name: 'type', type: 'string', defaultValue: 'string' },
-        // { name: 'width', type: 'int', defaultValue: 100 },
-        // { name: 'hidden', type: 'boolean', defaultValue: false },
-        { name: 'pivotFunction', type: 'string', defaultValue: null }
+        { name: 'pivotFunction', type: 'string', defaultValue: "Ext.tualo.PivotGridFunctionSum" }
     ],
+
 });

@@ -4,17 +4,18 @@ Ext.define('Tualo.routes.reportPivot.Viewer', {
             return [
                 {
                     name: 'Pivot Viewer ',
-                    path: '#report-pivot(/:{id})'
+                    path: '#report-pivot(/:{table})(/:{id})'
                 }
             ]
         }
     },
-    url: 'report-pivot(/:{id})',
+    url: 'report-pivot(/:{table})(/:{id})',
     handler: {
 
         action: function (values) {
             Ext.getApplication().addView('Tualo.reportPivot.lazy.views.PivotPanel', {
-                documentId: values.id
+                documentId: values.id,
+                tablename: values.table
             });
         },
         before: function (values, action) {

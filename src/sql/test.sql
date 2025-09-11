@@ -6,37 +6,37 @@ set @t='{
             {
                 "dataIndex": "belegjahr",
                 "column": "datum",
-                "table": "blg_hdr_{tabellenzusatz}",
-                "align": "left",
-                "pivotFunction": null,
-                "func": "substring({#},1,4)"
-            }
-        ],
-        "left": [
-            {
-                "dataIndex": "belegjahr",
-                "column": "datum",
-                "table": "blg_hdr_{tabellenzusatz}",
+                "table": "blg_hdr_plenty",
                 "align": "left",
                 "pivotFunction": null,
                 "func": "substring({#},1,4)"
             },
             {
-                "dataIndex": "belegmonat",
+                "dataIndex": "wd",
                 "column": "datum",
-                "table": "blg_hdr_{tabellenzusatz}",
+                "table": "blg_hdr_plenty",
                 "align": "left",
                 "pivotFunction": null,
-                "func": "substring({#},1,7)"
+                "func": "weekday({#})"
+            }
+        ],
+        "left": [ 
+            {
+                "dataIndex": "month",
+                "column": "datum",
+                "table": "blg_hdr_plenty",
+                "align": "left",
+                "pivotFunction": null,
+                "func": "month({#})"
             }
         ],
         "values": [
             {
                 "dataIndex": "netto",
                 "column": "netto",
-                "table": "blg_hdr_{tabellenzusatz}",
+                "table": "blg_hdr_plenty",
                 "align": "right",
-                "pivotFunction": "Ext.tualo.PivotGridFunctionSum",
+                "pivotFunction": "sum",
                 "func": ""
             }
         ]
@@ -45,8 +45,9 @@ set @t='{
 
 
 set @j=JSON_EXTRACT(@t,'$.pivot');
-select JSON_EXTRACT(@t, '$.top[*]') c;
+-- select JSON_EXTRACT(@t, '$.top[*]') c;
 
+/*
 select 
     ifnull(replace(ifnull(fn,'{#}'), '{#}', concat('`',tn,'`','.','`',col,'`')),concat('`',tn,'`','.','`',col,'`')) as expr,
     t.*
@@ -56,7 +57,7 @@ from JSON_TABLE(@j, '$.top[*]' COLUMNS (
     col VARCHAR(255) PATH '$.column',
     dataIndex VARCHAR(255) PATH '$.dataIndex'
 )) t;
-
+*/
 call p_pivot_aggregate('none','[{"table_name": "blg_hdr_plenty"}]','[]',JSON_EXTRACT(@t,'$.pivot'));
 
 select * from temp_pivot_aggregate;
