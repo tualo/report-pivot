@@ -36,6 +36,31 @@ class Aggregate implements IRoute
                 App::result('map', $db->direct('select * from temp_pivot_aggregate_top_map'));
                 App::result('success', true);
                 App::result('res', $res);
+
+
+                $save = $db->direct('
+                insert into pivot_configuration_by_user 
+                
+                (id,name,table_name,`values`,`top`,`left`) values 
+                ({id},{name},{table_name},{values},{top},{left})
+
+                on duplicate key update
+                    name=values(name),
+                    table_name=values(table_name),
+                    `values`=values(`values`),
+                    `top`=values(`top`),
+                    `left`=values(`left`)
+                ', [
+
+                    'id' => $payload_data['documentId'] || \Ramsey\Uuid\Uuid::uuid4()->toString(),
+                    'name' => $payload_data['name'] || 'not set',
+                    'table_name' => $payload_data['pivot']['top'][0]['table'],
+                    'values' => json_encode($payload_data['pivot']['values']),
+                    'top' => json_encode($payload_data['pivot']['top']),
+                    'left' => json_encode($payload_data['pivot']['left'])
+
+
+                ]);
             } catch (\Exception $e) {
                 App::result('sql', $db->getLastSQL());
                 App::result('msg', $e->getMessage());

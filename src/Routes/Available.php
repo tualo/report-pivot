@@ -5,10 +5,7 @@ namespace Tualo\Office\ReportPivot\Routes;
 use Tualo\Office\Basic\TualoApplication;
 use Tualo\Office\Basic\Route;
 use Tualo\Office\Basic\IRoute;
-use Tualo\Office\FiskalyAPI\API;
 
-use Tualo\Office\Basic\Session;
-use Tualo\Office\Basic\MYSQL\Database;
 
 class Available implements IRoute
 {
@@ -59,6 +56,7 @@ class Available implements IRoute
 
                 $data = $db->direct('select * from ds_column_list_label where table_name = {table_name} and active=1 order by position asc', ['table_name' => $matches['tablename']]);
                 TualoApplication::result('data', $data);
+
 
                 TualoApplication::result('success', true);
             } catch (\Exception $e) {

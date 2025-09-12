@@ -20,6 +20,9 @@ Ext.define('Tualo.reportPivot.lazy.views.RemotePivotGrid', {
 	config: {
 		store: null,
 		available: null,
+		values: null,
+		left: null,
+		top: null
 	},
 	onBoxReady: function () {
 		console.log('onBoxReady', 'tualo-reportpivot-remotepivotgrid');
@@ -34,6 +37,22 @@ Ext.define('Tualo.reportPivot.lazy.views.RemotePivotGrid', {
 		this.down('#available').setStore(available);
 		this.getViewModel().set('availableStore', available);
 	},
+	applyValues: function (values) {
+		console.log('RemotePivotGrid: Values applied to:', values);
+		this.down('#values').setStore(values);
+		this.getViewModel().set('valuesStore', values);
+	},
+	applyLeft: function (left) {
+		console.log('RemotePivotGrid: Left applied to:', left);
+		this.down('#rows').setStore(left);
+		this.getViewModel().set('rowsStore', left);
+	},
+	applyTop: function (top) {
+		console.log('RemotePivotGrid: Top applied to:', top);
+		this.down('#columns').setStore(top);
+		this.getViewModel().set('columnsStore', top);
+	},
+
 	controller: 'tualo-reportpivot-remotepivotgrid',
 	viewModel: {
 		type: 'tualo-reportpivot-remotepivotgrid'

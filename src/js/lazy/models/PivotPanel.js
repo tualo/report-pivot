@@ -69,7 +69,7 @@ Ext.define('Tualo.reportPivot.lazy.models.PivotPanel', {
         },
 
 
-        columns: {
+        top: {
             pageSize: 25000,
             autoLoad: true,
             model: 'Tualo.reportPivot.lazy.controlls.PivotGridAxisModel',
@@ -91,10 +91,13 @@ Ext.define('Tualo.reportPivot.lazy.models.PivotPanel', {
                         scope: this
                     }
                 }
+            },
+            listeners: {
+                load: 'onTopLoad'
             }
         },
 
-        rows: {
+        left: {
             pageSize: 25000,
             autoLoad: true,
             model: 'Tualo.reportPivot.lazy.controlls.PivotGridAxisModel',
@@ -107,7 +110,7 @@ Ext.define('Tualo.reportPivot.lazy.models.PivotPanel', {
                     destroy: 'DELETE'
                 },
                 timeout: 600000,
-                url: './report-pivot/rows',
+
                 reader: {
                     type: 'json',
                     rootProperty: 'data',
@@ -116,6 +119,9 @@ Ext.define('Tualo.reportPivot.lazy.models.PivotPanel', {
                         scope: this
                     }
                 }
+            },
+            listeners: {
+                load: 'onLeftLoad'
             }
         },
 
@@ -134,7 +140,7 @@ Ext.define('Tualo.reportPivot.lazy.models.PivotPanel', {
                     destroy: 'DELETE'
                 },
                 timeout: 600000,
-                url: './report-pivot/values',
+
                 reader: {
                     type: 'json',
                     rootProperty: 'data',
@@ -143,6 +149,9 @@ Ext.define('Tualo.reportPivot.lazy.models.PivotPanel', {
                         scope: this
                     }
                 }
+            },
+            listeners: {
+                load: 'onValuesLoad'
             }
         },
     }

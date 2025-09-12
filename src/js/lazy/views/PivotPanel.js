@@ -39,9 +39,27 @@ Ext.define('Tualo.reportPivot.lazy.views.PivotPanel', {
 
         this.getViewModel().set('tablename', table);
 
+
+        let valuesStore = this.getViewModel().getStore('values');
+        valuesStore.getProxy().setUrl('./report-pivot/values/' + table);
+        valuesStore.load();
+
+        let leftStore = this.getViewModel().getStore('left');
+        leftStore.getProxy().setUrl('./report-pivot/left/' + table);
+        leftStore.load();
+
+
+
+        let topStore = this.getViewModel().getStore('top');
+        topStore.getProxy().setUrl('./report-pivot/top/' + table);
+        topStore.load();
+
         let availableStore = this.getViewModel().getStore('available');
         availableStore.getProxy().setUrl('./report-pivot/available/' + table);
         availableStore.load();
+
+
+
         // this.getController().onDocumentIdChange(id);
         // this.loadDocument(id);
     },
@@ -72,7 +90,10 @@ Ext.define('Tualo.reportPivot.lazy.views.PivotPanel', {
             itemId: 'pivotgrid',
             bind: {
                 store: '{aggregate}',
-                // available: '{available}'
+                values: '{values}',
+                available: '{available}',
+                left: '{left}',
+                top: '{top}'
             },
             listeners: {
                 changed: 'onPivotChanged'

@@ -18,6 +18,17 @@ Ext.define('Tualo.reportPivot.lazy.controller.PivotPanel', {
             recordsData.push(o);
         }
         this.getView().down('#available').getStore().loadData(recordsData);
+        this.onPivotChanged(this.getView().down('#pivotgrid'));
+    },
+
+    onLeftLoad: function (store, records, successful, operation, eOpts) {
+        this.onPivotChanged(this.getView().down('#pivotgrid'));
+    },
+    onTopLoad: function (store, records, successful, operation, eOpts) {
+        this.onPivotChanged(this.getView().down('#pivotgrid'));
+    },
+    onValuesLoad: function (store, records, successful, operation, eOpts) {
+        this.onPivotChanged(this.getView().down('#pivotgrid'));
     },
 
     onPivotChanged: async function (pivot) {
@@ -38,10 +49,6 @@ Ext.define('Tualo.reportPivot.lazy.controller.PivotPanel', {
         console.log('onPivotChanged', x);
         this.reconfigureColumns(params, x);
 
-        window.o = {
-            params: params,
-            response: x
-        }
         this.getView().down('#pivotgrid').down('#pivotgrid').getStore().loadData(x.data);
     },
 
@@ -120,20 +127,14 @@ Ext.define('Tualo.reportPivot.lazy.controller.PivotPanel', {
 
     getColumnsByAxis: function (axis) {
         let result = [];
-        let store = this.getView().down('#' + axis).getStore();
+
+        console.log('getColumnsByAxis', axis, this.getViewModel().getStore(axis));
+        let store = this.getViewModel().getStore(axis);
+        // this.getView().down('#' + axis).getStore();
+
         store.getRange().forEach(function (rec) {
-            result.push({
-                dataIndex: rec.data.dataIndex,
-                column: rec.data.column,
-                text: rec.data.text,
-                table: rec.data.table,
-                align: rec.data.align,
-                renderer: rec.data.renderer,
-                pivotFunction: rec.data.pivotFunction,
-                filter: rec.data.filter,
-                number_filter: rec.data.number_filter,
-                func: rec.data.func
-            });
+            let c = { ...rec.data };
+            result.push(c);
         });
         return result;
     },
@@ -143,8 +144,8 @@ Ext.define('Tualo.reportPivot.lazy.controller.PivotPanel', {
             documentId: this.getViewModel().get('documentId'),
             preFilters: this.getPreFilters(),
             pivot: {
-                top: this.getColumnsByAxis('columns'),
-                left: this.getColumnsByAxis('rows'),
+                top: this.getColumnsByAxis('top'),
+                left: this.getColumnsByAxis('left'),
                 values: this.getColumnsByAxis('values'),
                 available: this.getColumnsByAxis('available')
             }
@@ -152,37 +153,5 @@ Ext.define('Tualo.reportPivot.lazy.controller.PivotPanel', {
         return result;
     },
 
-
-    /*
-
-    reconfigureRenderer: function (columns) {
-        //console.log(columns);
-        for (var i in columns) {
-            //if (typeof this.headlineRendererMap[columns[i].dataIndex]!=='undefined'){
-            //columns[i].text = this.headlineRendererMap[columns[i].dataIndex](columns[i].text);
-            //}
-            if (typeof this.columnRendererMap[columns[i].rendererMap] !== 'undefined') {
-                columns[i].renderer = this.columnRendererMap[columns[i].rendererMap];
-            }
-            if (typeof this.columnPHPRendererMap[columns[i].rendererMap] !== 'undefined') {
-                columns[i].phprenderer = this.columnPHPRendererMap[columns[i].rendererMap];
-            }
-            if (typeof columns[i].columns !== 'undefined') {
-                columns[i].columns = this.reconfigureRenderer(columns[i].columns);
-            }
-        }
-        return columns;
-    },
-
-    reconfigureColumns: function (columns) {
-        var me = this.grid;
-        if (columns) {
-            me.headerCt.removeAll();
-            columns = this.reconfigureRenderer(columns);
-            me.headerCt.add(columns);
-        }
-        me.getView().refresh();
-    },
-    */
 
 });
