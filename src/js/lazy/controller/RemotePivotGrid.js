@@ -7,7 +7,6 @@ Ext.define('Tualo.reportPivot.lazy.controller.RemotePivotGrid', {
         console.log('RemotePivotGrid', 'tualo-reportpivot-remotepivotgrid');
     },
     onAxisChanged: function (axis) {
-        console.log('onAxisChanged', axis);
         this.getView().fireEvent('changed', this.getView());
     }
 

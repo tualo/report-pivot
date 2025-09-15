@@ -9,7 +9,7 @@ create table if not exists p_pivot_query_last_statement (
 CREATE OR REPLACE PROCEDURE p_pivot_query_ex(
     IN tbl_name VARCHAR(99),
     IN order_by VARCHAR(99),
-    IN where_clause VARCHAR(99),
+    IN where_clause LONGTEXT,
     OUT stmt2 TEXT
 )
 DETERMINISTIC
@@ -25,7 +25,7 @@ BEGIN
 
 
 
-    call p_pivot_tops(sql_top);
+    call p_pivot_tops(sql_top,where_clause);
     
     set sql_statement ='
         SELECT 
@@ -40,7 +40,6 @@ BEGIN
         &w&
         
         GROUP BY &g&
-        WITH ROLLUP
         
         &o&
     ';
@@ -54,11 +53,114 @@ BEGIN
     
     set sql_statement = replace(sql_statement, '&o&', order_by);
 
+select sql_statement;
     set stmt2 = sql_statement;
 
 END;
 //
 
+
+CREATE OR REPLACE PROCEDURE `p_pivot_filters`(
+     in in_json JSON,
+     OUT out_where LONGTEXT
+)
+BEGIN
+    DECLARE use_where LONGTEXT;
+    DECLARE fn LONGTEXT;
+    DECLARE value_term LONGTEXT;
+
+    FOR `filter` IN (select * from JSON_TABLE(in_json, '$.filters[*]' COLUMNS (
+        `table_name` VARCHAR(255) PATH '$.table',
+        `filter_type` VARCHAR(255) PATH '$.type',
+        `column_name` VARCHAR(255) PATH '$.column',
+        `operator` VARCHAR(10) PATH '$.operator',
+        `func` VARCHAR(10) PATH '$.func' ,
+        `value` VARCHAR(255) PATH '$.value',
+        `valuelist` JSON PATH '$.value' -- if operator is in or not in
+    )) jt ) DO
+
+        -- select filter.column_name, filter.value, filter.operator, filter.filter_type, filter.func;
+
+        if use_where is null then
+            set use_where = ' WHERE ';
+        else
+            set use_where = concat(use_where, ' AND ');
+        end if;
+
+        case filter.operator
+            when 'eq' then set filter.operator = '=';
+            when 'ne' then set filter.operator = '<>';
+            when 'lt' then set filter.operator = '<';
+            when 'le' then set filter.operator = '<=';
+            when 'gt' then set filter.operator = '>';
+            when 'ge' then set filter.operator = '>=';
+            when 'like' then set filter.operator = 'LIKE';
+            when 'in' then set filter.operator = 'IN';
+            when 'not in' then set filter.operator = 'NOT IN';
+            when 'between' then set filter.operator = 'BETWEEN';
+            else set filter.operator = '=';
+        end case;   
+
+        case filter.filter_type
+            when 'string' then set filter.value = quote(filter.value);
+            when 'date' then set filter.value = quote(filter.value);
+            when 'datetime' then set filter.value = quote(filter.value);
+            when 'number' then set filter.filter_type = 'number';
+            when 'like' then set filter.value = quote(concat('%', filter.value, '%'));
+            when 'start' then set filter.value = quote(concat(filter.value, '%'));
+            when 'end' then set filter.value = quote(concat('%', filter.value));
+            else set filter.filter_type = 'string';
+        end case;
+
+        if filter.operator = 'IN' or filter.operator = 'NOT IN' then
+            
+            set value_term = '';
+
+            for r in (select trim(v) as v from JSON_TABLE(filter.valuelist, '$[*]' COLUMNS (v text PATH '$')) jt2) do
+                if   value_term = '' then
+                    set value_term = quote(r.v);
+                else
+                    set value_term =   concat(value_term, ',', quote(r.v));
+                end if;
+            end for;
+            
+            set filter.value = concat('(', value_term, ')');
+        end if;
+
+        if filter.operator = 'BETWEEN' then
+        select filter.valuelist;
+        select JSON_VALUE( filter.valuelist, '$[0]') as v1;
+        select JSON_VALUE( filter.valuelist, '$[1]') as v2;
+            set filter.value = concat(quote( JSON_VALUE( filter.valuelist, '$[0]') ), ' AND ', quote( JSON_VALUE(filter.valuelist, '$[1]') ));
+            select filter.value;
+        end if;
+
+        set use_where = concat(use_where, '  #func# ', filter.operator, ' ', ifnull(filter.value,'NULL'), ' ');
+
+        set fn = filter.func;
+        if fn is null then
+            set fn = '{#}';
+        end if;
+
+        set fn = replace(fn, '{#}', concat('`', filter.column_name, '`')    );
+
+
+        set use_where = replace(use_where, '#func#', fn);
+
+
+
+         
+
+
+
+    END FOR;
+    
+    if use_where is null then
+        set use_where = '';
+    end if;
+
+    set out_where = use_where;
+END //
 
 CREATE OR REPLACE PROCEDURE `p_pivot_cols`(
      in in_name varchar(25),
@@ -110,6 +212,7 @@ BEGIN
     DECLARE sql_query TEXT;
     DECLARE temp_query TEXT;
     DECLARE sql_table_query LONGTEXT;
+    DECLARE sql_table_where LONGTEXT DEFAULT '';
 
     IF JSON_VALID(in_preFilters)=0 THEN
         SET in_preFilters = JSON_ARRAY();
@@ -122,6 +225,8 @@ BEGIN
     call p_pivot_cols('top', in_pivot);
     call p_pivot_cols('left', in_pivot);
     call p_pivot_cols('values', in_pivot);
+
+    call p_pivot_filters(in_pivot, sql_table_where);
 
 
 
@@ -148,7 +253,7 @@ BEGIN
             call p_pivot_query_ex(
                 tbl.table_name,
                 "",
-                "",
+                sql_table_where,
                 sql_table_query
 
             );

@@ -25,30 +25,24 @@ Ext.define('Tualo.reportPivot.lazy.views.RemotePivotGrid', {
 		top: null
 	},
 	onBoxReady: function () {
-		console.log('onBoxReady', 'tualo-reportpivot-remotepivotgrid');
 		this.getController().onBoxReady();
 	},
 	applyStore: function (store) {
-		console.log('RemotePivotGrid: Store applied to:', store);
 		this.getViewModel().set('aggregate', store);
 	},
 	applyAvailable: function (available) {
-		console.log('RemotePivotGrid: Available applied to:', available);
 		this.down('#available').setStore(available);
 		this.getViewModel().set('availableStore', available);
 	},
 	applyValues: function (values) {
-		console.log('RemotePivotGrid: Values applied to:', values);
 		this.down('#values').setStore(values);
 		this.getViewModel().set('valuesStore', values);
 	},
 	applyLeft: function (left) {
-		console.log('RemotePivotGrid: Left applied to:', left);
 		this.down('#rows').setStore(left);
 		this.getViewModel().set('rowsStore', left);
 	},
 	applyTop: function (top) {
-		console.log('RemotePivotGrid: Top applied to:', top);
 		this.down('#columns').setStore(top);
 		this.getViewModel().set('columnsStore', top);
 	},
@@ -68,11 +62,10 @@ Ext.define('Tualo.reportPivot.lazy.views.RemotePivotGrid', {
 			columns: [],
 			features: [
 				{
-					id: 'tualofixedsummary',
-					ftype: 'tualofixedsummary',
+					id: 'advancedgroupingsummary',
+					ftype: 'advancedgroupingsummary',
 					dock: 'bottom',
-					rendererFieldName: 'summaryRenderer',
-					summaryTypeFieldName: 'summaryType'
+
 				}
 			],
 			bind: {

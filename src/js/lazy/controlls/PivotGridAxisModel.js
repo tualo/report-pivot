@@ -6,7 +6,8 @@ Ext.define('Tualo.reportPivot.lazy.controlls.PivotGridAxisModel', {
         'Ext.data.writer.Json'
     ],
 
-    idProperty: 'dataIndex',
+    idProperty: 'id',
+
     fields: [
         {
             name: 'dataIndex', type: 'string', calculate: function (data) {
@@ -39,7 +40,8 @@ Ext.define('Tualo.reportPivot.lazy.controlls.PivotGridAxisModel', {
 
         { name: 'func', type: 'string', defaultValue: null },
         { name: 'align', type: 'string', defaultValue: 'left' },
-        { name: 'pivotFunction', type: 'string', defaultValue: "Ext.tualo.PivotGridFunctionSum" }
+        { name: 'pivotFunction', type: 'string', defaultValue: "Ext.tualo.PivotGridFunctionSum" },
+        { name: 'filterValue', type: 'string', defaultValue: "{}" }
     ],
 
 });

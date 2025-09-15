@@ -16,7 +16,7 @@ class JsLoader implements IRoute
                 $matches['file'] . '.js',
                 dirname(__DIR__, 1) . '/js/lazy/',
                 ['js'],
-                ['application/javascript']
+                ['js' => 'application/javascript']
             );
         }, ['get'], false);
     }

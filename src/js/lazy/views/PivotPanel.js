@@ -58,6 +58,10 @@ Ext.define('Tualo.reportPivot.lazy.views.PivotPanel', {
         availableStore.getProxy().setUrl('./report-pivot/available/' + table);
         availableStore.load();
 
+        let filtersStore = this.getViewModel().getStore('filters');
+        filtersStore.getProxy().setUrl('./report-pivot/filters/' + table);
+        filtersStore.load();
+
 
 
         // this.getController().onDocumentIdChange(id);

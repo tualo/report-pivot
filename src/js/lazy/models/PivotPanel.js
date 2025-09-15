@@ -3,6 +3,7 @@ Ext.define('Tualo.reportPivot.lazy.models.PivotPanel', {
     alias: 'viewmodel.tualo-reportpivot-panel',
     requires: [
         'Tualo.reportPivot.lazy.controlls.PivotGridAxisModel',
+        'Tualo.reportPivot.lazy.controlls.models.PivotGridFilters'
     ],
     data: {
         documentId: null,
@@ -12,6 +13,8 @@ Ext.define('Tualo.reportPivot.lazy.models.PivotPanel', {
 
     },
     stores: {
+
+
         aggregate: {
             pageSize: 25000,
             model: 'Tualo.reportPivot.lazy.controlls.PivotGridAxisModel',
@@ -152,6 +155,24 @@ Ext.define('Tualo.reportPivot.lazy.models.PivotPanel', {
             },
             listeners: {
                 load: 'onValuesLoad'
+            }
+        },
+        filters: {
+            pageSize: 25000,
+            model: 'Tualo.reportPivot.lazy.controlls.models.PivotGridFilters',
+            proxy: {
+                type: 'ajax',
+                reader: {
+                    type: 'json',
+                    rootProperty: 'data',
+                    totalProperty: 'total',
+                    listeners: {
+                        scope: this
+                    }
+                }
+            },
+            listeners: {
+                load: 'onFiltersLoad'
             }
         },
     }

@@ -32,6 +32,12 @@ class Aggregate implements IRoute
                     'pivot' => str_replace('{tabellenzusatz}', 'plenty', json_encode($payload_data['pivot']))
                 ]);
                 $res = $db->moreResults();
+
+                /*
+                $db->direct('drop table if exists mat_pivot_aggregate');
+                $db->direct('create table mat_pivot_aggregate as select * from temp_pivot_aggregate');
+                */
+
                 App::result('data', $db->direct('select * from temp_pivot_aggregate'));
                 App::result('map', $db->direct('select * from temp_pivot_aggregate_top_map'));
                 App::result('success', true);

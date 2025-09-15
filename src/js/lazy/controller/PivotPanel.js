@@ -4,20 +4,11 @@ Ext.define('Tualo.reportPivot.lazy.controller.PivotPanel', {
 
     onBoxReady: function () {
 
-        console.log('onBoxReady', 'tualo-reportpivot-panel');
         this.getView().down('#pivotgrid').setVisible(true);
         this.getView().down('#waitpanel').setVisible(false);
     },
 
     onAvailableLoad: function (store, records, successful, operation, eOpts) {
-        console.log('onAvailableLoad', store, records, successful, operation, eOpts);
-        let recordsData = [];
-        for (let i = 0; i < records.length; i++) {
-            let o = { ...records[i].data };
-            delete o['id'];
-            recordsData.push(o);
-        }
-        this.getView().down('#available').getStore().loadData(recordsData);
         this.onPivotChanged(this.getView().down('#pivotgrid'));
     },
 
@@ -27,12 +18,15 @@ Ext.define('Tualo.reportPivot.lazy.controller.PivotPanel', {
     onTopLoad: function (store, records, successful, operation, eOpts) {
         this.onPivotChanged(this.getView().down('#pivotgrid'));
     },
+    onFilterLoad: function (store, records, successful, operation, eOpts) {
+        this.onPivotChanged(this.getView().down('#pivotgrid'));
+    },
     onValuesLoad: function (store, records, successful, operation, eOpts) {
         this.onPivotChanged(this.getView().down('#pivotgrid'));
     },
 
     onPivotChanged: async function (pivot) {
-        console.log('onPivotChanged', pivot);
+
         let params = this.getPivotParams();
         if (params.pivot.left.length === 0) return;
         if (params.pivot.top.length === 0) return;
@@ -46,9 +40,7 @@ Ext.define('Tualo.reportPivot.lazy.controller.PivotPanel', {
         })).json();
 
 
-        console.log('onPivotChanged', x);
         this.reconfigureColumns(params, x);
-
         this.getView().down('#pivotgrid').down('#pivotgrid').getStore().loadData(x.data);
     },
 
@@ -60,11 +52,15 @@ Ext.define('Tualo.reportPivot.lazy.controller.PivotPanel', {
 
         let col = remainingTops[0];
         responseMap.filter((c) => c.dataindex == col.dataIndex).forEach(function (item) {
-            console.log('topColumns', item);
+
             let topDef = values[0];
 
+            let value = item.value;
+            if (typeof Ext.util.Format[col.renderer] == 'function') {
+                value = Ext.util.Format[col.renderer](value, {});
+            }
             let config = {
-                text: item.value, // ggf rendern
+                text: value, // ggf rendern
                 dataIndex: prefix + item.id,
                 align: topDef.align,
                 minWidth: 100,
@@ -81,8 +77,11 @@ Ext.define('Tualo.reportPivot.lazy.controller.PivotPanel', {
                         text: v.text,
                         dataIndex: (prefix + item.id).replace('fld_', v.dataIndex + '_'),
                         align: v.align,
-                        minWidth: 100,
-                        renderer: Ext.util.Format[v.renderer]
+                        // minWidth: 100,
+                        autoSize: true,
+                        renderer: Ext.util.Format[v.renderer],
+                        summaryType: 'sum',
+                        summaryRenderer: Ext.util.Format[v.renderer]
                     });
                 });
                 config.columns = sub_columns;
@@ -99,12 +98,18 @@ Ext.define('Tualo.reportPivot.lazy.controller.PivotPanel', {
         let columns = [];
 
         params.pivot.left.forEach(function (col) {
-            columns.push({
+            let o = {
                 text: col.text,
                 dataIndex: col.dataIndex,
                 align: col.align,
-                renderer: Ext.util.Format[col.renderer]
-            });
+                // renderer: Ext.util.Format[col.renderer]
+            };
+
+            if (typeof Ext.util.Format[col.renderer] == 'function') {
+                o.renderer = Ext.util.Format[col.renderer];
+            }
+            columns.push(o);
+
         });
 
         let t = this.topColumns(params.pivot.top, response.map, params.pivot.values, 'fld_');
@@ -128,9 +133,7 @@ Ext.define('Tualo.reportPivot.lazy.controller.PivotPanel', {
     getColumnsByAxis: function (axis) {
         let result = [];
 
-        console.log('getColumnsByAxis', axis, this.getViewModel().getStore(axis));
         let store = this.getViewModel().getStore(axis);
-        // this.getView().down('#' + axis).getStore();
 
         store.getRange().forEach(function (rec) {
             let c = { ...rec.data };
@@ -144,6 +147,7 @@ Ext.define('Tualo.reportPivot.lazy.controller.PivotPanel', {
             documentId: this.getViewModel().get('documentId'),
             preFilters: this.getPreFilters(),
             pivot: {
+                filters: this.getColumnsByAxis('filters'),
                 top: this.getColumnsByAxis('top'),
                 left: this.getColumnsByAxis('left'),
                 values: this.getColumnsByAxis('values'),

@@ -3,7 +3,8 @@ delimiter //
 
 
 CREATE OR REPLACE PROCEDURE p_pivot_tops(
-    out sql_table_query LONGTEXT
+    out sql_table_query LONGTEXT,
+    in where_clause LONGTEXT
 )
 DETERMINISTIC
 begin 
@@ -28,8 +29,9 @@ DECLARE q LONGTEXT;
     for rec in (select temp_pivot_aggregate_top.*, row_number() over (order by dataIndex) seq from temp_pivot_aggregate_top) 
     do 
 
-        set q = replace( replace( 'SELECT DISTINCT #expr# AS val FROM #tn# ORDER BY 1','#expr#', rec.expr), '#tn#', rec.tn );
+        set q = replace( replace( 'SELECT DISTINCT #expr# AS val FROM #tn# #where# ORDER BY 1','#expr#', rec.expr), '#tn#', rec.tn );
 
+        set q = replace(q, '#where#', where_clause);
 
         set q = concat('insert into  temp_pivot_aggregate_top_map (id,seq,tn,col,dataIndex,value) select row_number() over (order by q.val), ', quote(rec.seq), ', ', quote(rec.tn), ', ', quote(rec.col), ', ', quote(rec.dataIndex), ', q.val from (', q,') q');
         PREPARE stmt FROM q;
@@ -97,11 +99,12 @@ DECLARE q LONGTEXT;
 
 
         replace(
+                    replace(
             replace(
                 replace(
                     '
                         condition_values_#seq# as (
-                            SELECT DISTINCT #expr# AS val , \' #expr# \' term FROM #tn# ORDER BY 1
+                            SELECT DISTINCT #expr# AS val , \' #expr# \' term FROM #tn# #where# ORDER BY 1
                         )
                     ',
                     '#seq#',
@@ -112,7 +115,10 @@ DECLARE q LONGTEXT;
             ),
             '#tn#',
             d.tn
-        ) 
+        ) ,
+            '#where#',
+            where_clause
+        )
 
         separator ', '
 

@@ -11,15 +11,28 @@ class Axis implements IRoute
     public static function register()
     {
 
-        Route::add('/report-pivot/(?P<axis>(top|left|values))/(?P<tablename>\w+)', function ($matches) {
+        Route::add('/report-pivot/(?P<axis>(top|left|values|filters))/(?P<tablename>\w+)', function ($matches) {
             TualoApplication::contenttype('application/json');
             $db = TualoApplication::get('session')->getDB();
             try {
-                $data = $db->singleValue('select `' . $matches['axis'] . '` res from pivot_configuration_by_user where table_name = {table_name} ', ['table_name' => $matches['tablename']], 'res');
-                if (is_string($data)) {
-                    $data = json_decode($data, true);
+                if (
+                    $matches['axis'] == 'filters'
+
+                ) {
+                    $data = [[
+                        'func' => 'year({#})',
+                        'column' => 'datum',
+                        'operator' => '=',
+                        'value' => '2023',
+                        'type' => 'number'
+                    ]];
                 } else {
-                    $data = [];
+                    $data = $db->singleValue('select `' . $matches['axis'] . '` res from pivot_configuration_by_user where table_name = {table_name} ', ['table_name' => $matches['tablename']], 'res');
+                    if (is_string($data)) {
+                        $data = json_decode($data, true);
+                    } else {
+                        $data = [];
+                    }
                 }
                 TualoApplication::result('data', $data);
 
