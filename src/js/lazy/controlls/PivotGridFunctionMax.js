@@ -1,5 +1,10 @@
 Ext.define('Tualo.reportPivot.lazy.controlls.PivotGridFunctionMax', {
 	extend: 'Tualo.reportPivot.lazy.controlls.PivotGridFunction',
+	statics: {
+		comboboxText: function () {
+			return 'Maximum';
+		}
+	},
 	alias: 'pivotfunction.max',
 	value: null,
 	titleTemplate: 'Maximum ({text})',
@@ -16,3 +21,4 @@ Ext.define('Tualo.reportPivot.lazy.controlls.PivotGridFunctionMax', {
 		return this.value;
 	}
 });
+// Ext.ClassManager.aliasToName

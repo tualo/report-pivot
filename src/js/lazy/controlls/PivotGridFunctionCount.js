@@ -1,5 +1,10 @@
 Ext.define('Tualo.reportPivot.lazy.controlls.PivotGridFunctionCount', {
 	extend: 'Tualo.reportPivot.lazy.controlls.PivotGridFunction',
+	statics: {
+		comboboxText: function () {
+			return 'Anzahl';
+		}
+	},
 	alias: 'pivotfunction.count',
 	value: 0,
 	titleTemplate: 'Anzahl ({text})',

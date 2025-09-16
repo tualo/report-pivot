@@ -1,5 +1,10 @@
 Ext.define('Tualo.reportPivot.lazy.controlls.PivotGridFunctionDistinctCount', {
   extend: 'Tualo.reportPivot.lazy.controlls.PivotGridFunction',
+  statics: {
+    comboboxText: function () {
+      return 'individuelle Anzahl';
+    }
+  },
   alias: 'pivotfunction.distinctcount',
   value: 0,
   titleTemplate: 'indiv. Anzahl ({text})',

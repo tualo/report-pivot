@@ -23,18 +23,18 @@ Ext.define('Tualo.reportPivot.lazy.views.PivotPanel', {
     },
     onBoxReady: function () {
 
-        console.log('onBoxReady', 'tualo-reportpivot-panel');
+        Tualo.reportPivot.Logger.log('onBoxReady', 'tualo-reportpivot-panel');
         this.getController().onBoxReady();
     },
     applyDocumentId: function (id) {
-        console.log('PivotPanel: Document ID applied to:', id);
+        Tualo.reportPivot.Logger.log('PivotPanel: Document ID applied to:', id);
         this.getViewModel().set('documentId', id);
         // this.getController().onDocumentIdChange(id);
         // this.loadDocument(id);
     },
 
     applyTablename: function (table) {
-        console.log('PivotPanel: Table Name applied to:', table);
+        Tualo.reportPivot.Logger.log('PivotPanel: Table Name applied to:', table);
         this.getViewModel().set('tablename', table);
 
         this.getViewModel().set('tablename', table);

@@ -43,8 +43,11 @@ Ext.define('Tualo.reportPivot.lazy.controlls.models.PivotGridAxis', {
                         scope: this
                     }
                 }
-            }
-        },
+            },
+            listeners: {
+                datachanged: 'onDataChanged'
+            },
 
+        }
     }
 });

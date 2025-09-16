@@ -41,7 +41,8 @@ DECLARE q LONGTEXT;
         -- insert into temp_pivot_aggregate_top_map (tn,col,dataIndex) values (rec.tn,rec.col,rec.dataIndex);
 
     end for; 
-    
+
+ 
     
 
     with fn as (
@@ -198,5 +199,18 @@ DECLARE q LONGTEXT;
     temp_p_pivot_tops_t3
     ;
 
+    if sql_table_query is null then
+        set sql_table_query = '0 no_value';
+    end if;
 
+    /*
+    select 'temp_p_pivot_tops_t2';
+    select * from temp_p_pivot_tops_t2;
+    select 'temp_pivot_aggregate_values';
+    select * from temp_pivot_aggregate_values;
+
+    select 'temp_p_pivot_tops_t3';
+    select * from temp_p_pivot_tops_t3;
+
+*/
 end //

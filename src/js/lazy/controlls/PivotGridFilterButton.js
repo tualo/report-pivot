@@ -7,10 +7,10 @@ Ext.define('Tualo.reportPivot.lazy.controlls.PivotGridFilterButton', {
     },
     applyFilterValue: function (v) {
         this.filterValue = v;
-        console.log('applyFilterValue', v);
+        Tualo.reportPivot.Logger.log('applyFilterValue', v);
         return v;
     },
-    iconCls: 'x-fa fa-solid fa-filter',
+    iconCls: 'x-fa fa-solid fa-gear',
     ui: 'pivot-iconbutton',
     handler: function (btn) {
         var rec = btn.getWidgetRecord();
@@ -31,7 +31,7 @@ Ext.define('Tualo.reportPivot.lazy.controlls.PivotGridFilterButton', {
 
         myWindow.show();
         myWindow.on('close', function () {
-            console.log('Window closed');
+            Tualo.reportPivot.Logger.log('Window closed');
         });
         myWindow.center();
     }

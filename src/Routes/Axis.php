@@ -22,8 +22,8 @@ class Axis implements IRoute
                     $data = [[
                         'func' => 'year({#})',
                         'column' => 'datum',
-                        'operator' => '=',
-                        'value' => '2023',
+                        'operator' => 'in',
+                        'value' => ['2023', '2024'],
                         'type' => 'number'
                     ]];
                 } else {

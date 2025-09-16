@@ -8,6 +8,40 @@ Ext.define('Tualo.reportPivot.lazy.controller.PivotPanel', {
         this.getView().down('#waitpanel').setVisible(false);
     },
 
+    onDataChanged: function () {
+        Tualo.reportPivot.Logger.log('onDataChanged', arguments);
+
+        let filters = this.getViewModel().getStore('filters'),
+            available = this.getViewModel().getStore('available').getRange(),
+            left = this.getViewModel().getStore('left').getRange(),
+            top = this.getViewModel().getStore('top').getRange(),
+            values = this.getViewModel().getStore('values').getRange();
+
+        filters.removeAll();
+        available.forEach(function (rec) {
+            // Tualo.reportPivot.Logger.log('available', rec.get('dataIndex'), rec.get('filterValue'));
+            if (
+                (rec.get('filterValue') != '{}') && (rec.get('filterValue') != '[]') && (rec.get('filterValue') != '')
+            ) {
+                try {
+                    let filterList = JSON.parse(rec.get('filterValue'));
+
+                    filterList.forEach(function (filter) {
+                        filters.add({ ...filter /*, table: rec.get('dataIndex'), column: rec.get('dataIndex') */ });
+                    });
+
+                } catch (e) {
+                    console.error(e);
+                }
+
+            }
+        });
+
+        Tualo.reportPivot.Logger.log('filters', filters.getRange());
+
+        // this.onPivotChanged(this.getView().down('#pivotgrid'));
+    },
+
     onAvailableLoad: function (store, records, successful, operation, eOpts) {
         this.onPivotChanged(this.getView().down('#pivotgrid'));
     },
@@ -26,11 +60,13 @@ Ext.define('Tualo.reportPivot.lazy.controller.PivotPanel', {
     },
 
     onPivotChanged: async function (pivot) {
-
+        this.onDataChanged();
         let params = this.getPivotParams();
         if (params.pivot.left.length === 0) return;
         if (params.pivot.top.length === 0) return;
         if (params.pivot.values.length === 0) return;
+
+        delete params.pivot.available;
         let x = await (await fetch('./report-pivot/aggregate', {
             method: 'POST',
             headers: {

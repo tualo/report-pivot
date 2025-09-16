@@ -1,4 +1,9 @@
 Ext.define('Tualo.reportPivot.lazy.controlls.PivotGridFunctionAverage', {
+	statics: {
+		comboboxText: function () {
+			return 'Durchschnitt';
+		}
+	},
 	extend: 'Tualo.reportPivot.lazy.controlls.PivotGridFunction',
 	alias: 'pivotfunction.average',
 	value: 0,

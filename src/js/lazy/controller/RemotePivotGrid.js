@@ -4,10 +4,13 @@ Ext.define('Tualo.reportPivot.lazy.controller.RemotePivotGrid', {
 
     onBoxReady: function () {
 
-        console.log('RemotePivotGrid', 'tualo-reportpivot-remotepivotgrid');
+        Tualo.reportPivot.Logger.log('RemotePivotGrid', 'tualo-reportpivot-remotepivotgrid');
     },
     onAxisChanged: function (axis) {
+        Tualo.reportPivot.Logger.log('onAxisChanged', 'tualo-reportpivot-remotepivotgrid');
         this.getView().fireEvent('changed', this.getView());
+    },
+    onDataChanged: function () {
+        Tualo.reportPivot.Logger.log('onDataChanged', 'tualo-reportpivot-remotepivotgrid');
     }
-
 });

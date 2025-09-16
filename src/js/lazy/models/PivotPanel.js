@@ -154,7 +154,8 @@ Ext.define('Tualo.reportPivot.lazy.models.PivotPanel', {
                 }
             },
             listeners: {
-                load: 'onValuesLoad'
+                load: 'onValuesLoad',
+                datachanged: 'onDataChanged'
             }
         },
         filters: {

@@ -69,7 +69,20 @@ BEGIN
     DECLARE fn LONGTEXT;
     DECLARE value_term LONGTEXT;
 
-    FOR `filter` IN (select * from JSON_TABLE(in_json, '$.filters[*]' COLUMNS (
+    FOR `filter` IN (select 
+    
+        `table_name`,
+            `filter_type`,
+            `column_name`,
+            `operator`,
+            if (
+                if(`func` is null, '{#}', `func`)='',
+                '{#}', 
+                if(`func` is null, '{#}', `func`)
+            ) as `func`,
+            `value`,
+            `valuelist`
+    from JSON_TABLE(in_json, '$.filters[*]' COLUMNS (
         `table_name` VARCHAR(255) PATH '$.table',
         `filter_type` VARCHAR(255) PATH '$.type',
         `column_name` VARCHAR(255) PATH '$.column',
@@ -128,11 +141,7 @@ BEGIN
         end if;
 
         if filter.operator = 'BETWEEN' then
-        select filter.valuelist;
-        select JSON_VALUE( filter.valuelist, '$[0]') as v1;
-        select JSON_VALUE( filter.valuelist, '$[1]') as v2;
             set filter.value = concat(quote( JSON_VALUE( filter.valuelist, '$[0]') ), ' AND ', quote( JSON_VALUE(filter.valuelist, '$[1]') ));
-            select filter.value;
         end if;
 
         set use_where = concat(use_where, '  #func# ', filter.operator, ' ', ifnull(filter.value,'NULL'), ' ');
@@ -194,11 +203,13 @@ BEGIN
          ) t
     )', '####', in_name);
 
-        insert into p_pivot_query_last_statement (`statement`) values (temp_query);
+    
+    insert into p_pivot_query_last_statement (`statement`) values (temp_query);
 
     PREPARE stmt FROM temp_query;
     EXECUTE stmt USING in_pivot;
     DEALLOCATE PREPARE stmt;
+
 
 END //
 
@@ -225,7 +236,7 @@ BEGIN
     call p_pivot_cols('top', in_pivot);
     call p_pivot_cols('left', in_pivot);
     call p_pivot_cols('values', in_pivot);
-
+ 
     call p_pivot_filters(in_pivot, sql_table_where);
 
 
@@ -237,16 +248,6 @@ BEGIN
             table_alias VARCHAR(255) PATH '$.alias'
         )) jt ) DO
 
-            set @left = ( select group_concat(  expr  order by expr ) from temp_pivot_aggregate_left );
-            set @top = ( select group_concat(  expr  order by expr ) from temp_pivot_aggregate_top );
-
-
-   
-            set @values = (
-                select group_concat(table_name order by table_name) from JSON_TABLE(in_pivot, '$.values[*]' COLUMNS (
-                    table_name VARCHAR(255) PATH '$.dataIndex'
-                )) v
-            );
 
 
 

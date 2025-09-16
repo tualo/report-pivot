@@ -54,8 +54,6 @@ class Available implements IRoute
                 where ds_column_list_label.table_name = {table_name} and ds_column_list_label.active=1 order by ds_column_list_label.position asc', ['table_name' => $matches['tablename']]);
                 TualoApplication::result('data', $data);
 
-                $data = $db->direct('select * from ds_column_list_label where table_name = {table_name} and active=1 order by position asc', ['table_name' => $matches['tablename']]);
-                TualoApplication::result('data', $data);
 
 
                 TualoApplication::result('success', true);

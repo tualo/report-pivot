@@ -4,6 +4,7 @@ Ext.define('Tualo.reportPivot.lazy.controlls.PivotGridAxis', {
   requires: [
     'Ext.tree.Panel',
     'Tualo.reportPivot.lazy.controlls.PivotGridFilterButton',
+    'Tualo.reportPivot.lazy.controlls.PivotGridAggFnButton',
     'Tualo.reportPivot.lazy.controlls.PivotGridAxisModel',
     'Tualo.reportPivot.lazy.controlls.models.PivotGridAxis',
     'Tualo.reportPivot.lazy.controlls.controller.PivotGridAxis',
@@ -33,6 +34,7 @@ Ext.define('Tualo.reportPivot.lazy.controlls.PivotGridAxis', {
     applyFilterText: 'Anwenden',
     clearFilterText: 'nicht Filtern',
     cancelFilterText: 'Abbrechen',
+    btnText: null
 
   },
 
@@ -81,12 +83,13 @@ Ext.define('Tualo.reportPivot.lazy.controlls.PivotGridAxis', {
     return v;
   },
 
+  /*
   store: {
     model: 'Tualo.reportPivot.lazy.controlls.PivotGridAxisModel',
     data: [
     ]
   },
-
+  */
 
 
   columns: [
@@ -95,34 +98,25 @@ Ext.define('Tualo.reportPivot.lazy.controlls.PivotGridAxis', {
         text: '{text}',
       },
       dataIndex: 'text',
+      renderer: function (v, meta, rec) {
+        if ((rec.get('filterValue') != '{}') && (rec.get('filterValue') != '[]') && (rec.get('filterValue') != '')) {
+          meta.style = 'font-weight:bold;';
+        }
+        return v;
+      },
       flex: 1
     },
     {
-      bind: {
-        text: '{functionText}',
-        hidden: '{hideFunction}'
-      },
-      dataIndex: 'pivotFunction',
-      flex: 1,
-      renderer: function (v, m, rec) {
-        try {
-          var c = Ext.create(v, {});
-          return c.titleTemplate.replace('{text}', rec.get('text'));
-        } catch (e) {
-          return v;
-        }
-      }
-    },
-    {
-
-
       xtype: 'widgetcolumn',
-      dataIndex: 'filter',
-      width: 40,
+      // dataIndex: 'pivotFunction',
+      width: 50,
       widget: {
-        xtype: 'tualo-reportpivot-pivotgridfilterbutton',
+        xtype: 'tualo-reportpivot-pivotgridaggfnbutton',
         bind: {
+          text: '{btnText}',
+          pivotFunction: '{record.pivotFunction}',
           filterValue: '{record.filterValue}',
+          functionHidden: '{!showFunction}',
         }
       }
     }

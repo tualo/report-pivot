@@ -5,12 +5,17 @@ Ext.define('Tualo.reportPivot.lazy.controlls.controller.PivotGridAxis', {
 
     onBoxReady: function () {
 
-        console.log('onBoxReady', 'tualo-reportpivot-pivotgridsaxis');
+        Tualo.reportPivot.Logger.log('onBoxReady', 'tualo-reportpivot-pivotgridsaxis');
 
     },
 
     onDropped: function (node, data, dropRec, dropPosition) {
-        console.log('onDropped', this.getView().getStore().getRange());
+        Tualo.reportPivot.Logger.log('onDropped', this.getView().getStore().getRange());
+        this.getView().fireEvent('changed', this.getView());
+    },
+
+    onDataChanged: function () {
+        Tualo.reportPivot.Logger.log('onDataChanged', arguments);
         this.getView().fireEvent('changed', this.getView());
     }
 

@@ -107,7 +107,11 @@ Ext.define('Tualo.reportPivot.lazy.views.RemotePivotGrid', {
 							showFilter: true,
 							showFunction: false,
 							listeners: {
-								changed: 'onAxisChanged'
+								changed: 'onAxisChanged',
+								datachanged: function () {
+									Tualo.reportPivot.Logger.log('datachanged', 'tualo-reportpivot-remotepivotgrid');
+								}
+
 							},
 
 
