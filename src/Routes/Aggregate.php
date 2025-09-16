@@ -47,8 +47,8 @@ class Aggregate implements IRoute
                 $save = $db->direct('
                 insert into pivot_configuration_by_user 
                 
-                (id,name,table_name,`values`,`top`,`left`) values 
-                ({id},{name},{table_name},{values},{top},{left})
+                (id,name,table_name,`values`,`top`,`left`,`login`) values 
+                ({id},{name},{table_name},{values},{top},{left},getSessionUser())
 
                 on duplicate key update
                     name=values(name),
@@ -58,12 +58,13 @@ class Aggregate implements IRoute
                     `left`=values(`left`)
                 ', [
 
-                    'id' => $payload_data['documentId'] || \Ramsey\Uuid\Uuid::uuid4()->toString(),
-                    'name' => $payload_data['name'] || 'not set',
+                    'id' => $payload_data['documentId'],
+                    'name' => isset($payload_data['name']) ? $payload_data['name'] : 'not set',
                     'table_name' => $payload_data['pivot']['top'][0]['table'],
                     'values' => json_encode($payload_data['pivot']['values']),
                     'top' => json_encode($payload_data['pivot']['top']),
-                    'left' => json_encode($payload_data['pivot']['left'])
+                    'left' => json_encode($payload_data['pivot']['left']),
+                    'filter' => json_encode($payload_data['pivot']['filter'])
 
 
                 ]);

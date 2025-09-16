@@ -26,46 +26,49 @@ Ext.define('Tualo.reportPivot.lazy.views.PivotPanel', {
         Tualo.reportPivot.Logger.log('onBoxReady', 'tualo-reportpivot-panel');
         this.getController().onBoxReady();
     },
+
+    updateProxy: function (storeName) {
+        let vm = this.getViewModel(),
+            store = vm.getStore(storeName),
+            documentId = vm.get('documentId'),
+            table = vm.get('tablename'),
+            parts = ['.', 'report-pivot', storeName, table, documentId];
+
+        store.getProxy().setUrl(parts.join('/'));
+        store.load()
+    },
+
     applyDocumentId: function (id) {
         Tualo.reportPivot.Logger.log('PivotPanel: Document ID applied to:', id);
         this.getViewModel().set('documentId', id);
-        // this.getController().onDocumentIdChange(id);
-        // this.loadDocument(id);
+        this.updateProxy('values');
+        this.updateProxy('left');
+        this.updateProxy('top');
+        this.updateProxy('filters');
+        return id;
     },
+
+
 
     applyTablename: function (table) {
         Tualo.reportPivot.Logger.log('PivotPanel: Table Name applied to:', table);
         this.getViewModel().set('tablename', table);
 
-        this.getViewModel().set('tablename', table);
+        let vm = this.getViewModel(),
+            storeName = 'available',
+            store = vm.getStore(storeName),
+            parts = ['.', 'report-pivot', storeName, table];
 
 
-        let valuesStore = this.getViewModel().getStore('values');
-        valuesStore.getProxy().setUrl('./report-pivot/values/' + table);
-        valuesStore.load();
+        this.updateProxy('values');
+        this.updateProxy('left');
+        this.updateProxy('top');
+        this.updateProxy('filters');
 
-        let leftStore = this.getViewModel().getStore('left');
-        leftStore.getProxy().setUrl('./report-pivot/left/' + table);
-        leftStore.load();
+        store.getProxy().setUrl(parts.join('/'));
+        store.load();
+        return table;
 
-
-
-        let topStore = this.getViewModel().getStore('top');
-        topStore.getProxy().setUrl('./report-pivot/top/' + table);
-        topStore.load();
-
-        let availableStore = this.getViewModel().getStore('available');
-        availableStore.getProxy().setUrl('./report-pivot/available/' + table);
-        availableStore.load();
-
-        let filtersStore = this.getViewModel().getStore('filters');
-        filtersStore.getProxy().setUrl('./report-pivot/filters/' + table);
-        filtersStore.load();
-
-
-
-        // this.getController().onDocumentIdChange(id);
-        // this.loadDocument(id);
     },
 
     layout: 'fit',
