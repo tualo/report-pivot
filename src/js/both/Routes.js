@@ -13,6 +13,7 @@ Ext.define('Tualo.routes.reportPivot.Viewer', {
     handler: {
 
         action: function (values) {
+            if (!values.id) values.id = 'current';
             Ext.getApplication().addView('Tualo.reportPivot.lazy.views.PivotPanel', {
                 documentId: values.id,
                 tablename: values.table
