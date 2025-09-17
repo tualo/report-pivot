@@ -51,6 +51,7 @@ class InstallMainSQLCommandline implements ICommandline
     {
 
         $files = [
+            'ddl' => 'setup ddl ',
             'proc.p_pivot_aggregate' => 'setup p_pivot_aggregate ',
             'proc.p_pivot_tops' => 'setup p_pivot_tops '
         ];

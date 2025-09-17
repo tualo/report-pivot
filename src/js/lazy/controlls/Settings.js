@@ -88,14 +88,11 @@ Ext.define('Tualo.reportPivot.lazy.controlls.Settings', {
                     fieldLabel: 'Funktion',
                     // value: rec.get('pivotFunction'),
                     bind: {
-                        value: '{pivotFunction}',
+                        value: '{axisRecord.pivotFunction}',
                         disabled: '{functionHidden}'
                     },
                     listeners: {
-                        change: function (field, newValue, oldValue, eOpts) {
-                            Tualo.reportPivot.Logger.log('change', newValue);
-                            // rec.set('pivotFunction', newValue.replace('pivotfunction.', '') || null);
-                        }
+                        change: 'onPivotFunctionChange'
                     }
                 }
             ]

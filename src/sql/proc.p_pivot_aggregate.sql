@@ -4,7 +4,7 @@ create table if not exists p_pivot_query_last_statement (
     id int auto_increment primary key,
     `statement` text,
     created_at timestamp default current_timestamp
-);
+) //
 
 CREATE OR REPLACE PROCEDURE p_pivot_query_ex(
     IN tbl_name VARCHAR(99),

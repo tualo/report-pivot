@@ -1,6 +1,22 @@
 delimiter //
 
-
+CREATE FUNCTION IF NOT EXISTS `fn_ds_default_renderer`(
+    fieldtype varchar(255)
+) RETURNS longtext  
+    DETERMINISTIC
+BEGIN 
+    DECLARE return_value LONGTEXT;
+    SET return_value = 
+        case 
+            when fieldtype in ('int','integer','bigint','smallint','tinyint','mediumint') then 'deValueRenderer'
+            when fieldtype in ('float','double','decimal','numeric','real') then 'deValueRenderer'
+            when fieldtype in ('date') then 'deDate'
+            when fieldtype in ('datetime','timestamp') then 'deDateTime'
+            when fieldtype in ('time') then 'deTime'
+            else ''
+        end;
+    RETURN return_value;
+END //
 
 CREATE OR REPLACE PROCEDURE p_pivot_tops(
     out sql_table_query LONGTEXT,

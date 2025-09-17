@@ -14,6 +14,7 @@ Ext.define('Tualo.reportPivot.lazy.controlls.PivotGridFunctionCombobox', {
                     let label = Ext.ClassManager.getByAlias(name).comboboxText?.();
 
                     if (label) {
+                        name = name.replace('pivotfunction.', '');
                         list.push([name, label]);
                     }
                 }

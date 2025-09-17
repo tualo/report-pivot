@@ -9,6 +9,13 @@ Ext.define('Tualo.reportPivot.lazy.controlls.controller.Settings', {
 
     },
 
+    onPivotFunctionChange: function (field, newValue, oldValue, eOpts) {
+        let vm = this.getViewModel();
+        let rec = vm.get('axisRecord');
+        Tualo.reportPivot.Logger.log('onPivotFunctionChange', newValue);
+        rec.set('pivotFunction', newValue.replace('pivotfunction.', '') || null);
+    },
+
     onApplyAxisRecord: function (rec) {
         let vm = this.getViewModel();
         let store = vm.getStore('filter');
